@@ -4,17 +4,15 @@ import type { Todos, AddTodo } from '../types/Todos';
 
 type Props = {
 	currentTodo: AddTodo;
-	onChangeTitle: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	onChangeStatus: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-	onChangeSummary: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleEditInputTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleEditInputStatusChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 	handleEditInputSummaryChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	handleEditInputLimitChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleEditSubmit: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export const EditForm: FC<Props> = props => {
-	const { currentTodo, onChangeTitle, onChangeStatus, onChangeSummary, handleEditInputTitleChange, handleEditInputStatusChange, handleEditInputSummaryChange,  handleEditSubmit} = props;
+	const { currentTodo, handleEditInputTitleChange, handleEditInputStatusChange, handleEditInputSummaryChange, handleEditInputLimitChange, handleEditSubmit} = props;
 	return (
 		<SInputField>
 			<form onSubmit={()=>handleEditSubmit}>
@@ -26,6 +24,7 @@ export const EditForm: FC<Props> = props => {
 					<option value={'完了'}>完了</option>
 				</SSelect>
 				<SInput placeholder="詳細を編集" value={currentTodo.summary} onChange={handleEditInputSummaryChange}/>
+				<SInput type='date' placeholder='期限' value={currentTodo.limit} onChange={handleEditInputLimitChange}/>
 				<button type='submit' onClick={(e)=>handleEditSubmit(e)}>更新</button>
 			</form>
 		</SInputField>

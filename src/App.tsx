@@ -2,53 +2,53 @@ import { ChangeEvent, useState, FC } from 'react';
 import styled from "styled-components";
 import { AddForm } from './components/AddForm';
 import { EditForm } from './components/EditForm';
-import { SearchTodo } from './components/SearchTodo';
 import { TodoList } from './components/TodoList';
 import type { Todos, AddTodo } from './types/Todos';
 
 export const App = () => {
-	const [inputTitle, setInputTitle] = useState<string>('');
-	const [inputStatus, setInputStatus] = useState<string>('');
-	const [inputSummary, setInputSummary] = useState<string>('');
-	const [inputLimit, setInputLimit] = useState<string>('');
+	const defaultTodos = [
+		{id: 0, title:'test1', status: '未着手', summary: 'testtest1', limit: '2023-01-01'},
+		{id: 1, title:'test2', status: '進行中', summary: 'testtest2', limit: '2023-02-10'},
+		{id: 2, title:'test2', status: '完了', summary: 'testtest3', limit: '2023-03-31'},
+	]
+
 	const [inputAddTodo, setInputAddTodo] = useState<AddTodo>({id: 0, title:'', status: '', summary: '', limit: ''})
 	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [currentTodo, setCurrentTodo] = useState<AddTodo>({id: 0, title:'', status: '', summary: '', limit: ''});
-
-	const [todoList, setTodoList] = useState<Todos[]>([{id: 0, title:'', status: '', summary: '', limit: ''}]);
+	const [todoList, setTodoList] = useState<Todos[]>(defaultTodos);
 
 	const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputTitle(e.target.value);
+		setInputAddTodo({
+			...inputAddTodo,
+			title: e.target.value,
+		});
 	}
-
-	// const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-	// 	setInputAddTodo({
-	// 		...inputAddTodo,
-	// 		title: e.target.value,
-	// 	});
-	// }
-
-
 	const onChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setInputStatus(e.target.value);
+		setInputAddTodo({
+			...inputAddTodo,
+			status: e.target.value
+		});
 	}
 	const onChangeSummary = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputSummary(e.target.value);
+		setInputAddTodo({
+			...inputAddTodo,
+			summary: e.target.value
+		});
 	}
 	const onChangeLimit = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputLimit(e.target.value);
+		setInputAddTodo({
+			...inputAddTodo,
+			limit: e.target.value
+		});
 	}
+
 
 	const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 		const newTodos = [...todoList];
-		newTodos.push({id: newTodos.length, title: inputTitle, status: inputStatus, summary: inputSummary, limit: inputLimit});
+		newTodos.push({id: newTodos.length, title: inputAddTodo.title, status: inputAddTodo.status, summary: inputAddTodo.summary, limit: inputAddTodo.limit});
 		setTodoList(newTodos);
-		console.log(todoList);
-
-		setInputTitle('');
-		setInputStatus('');
-		setInputSummary('');
+		setInputAddTodo({id: 0, title: '', status: '', summary: '', limit: ''})
 	}
 
 
@@ -71,7 +71,6 @@ export const App = () => {
 			...currentTodo,
 			title: e.target.value
 		});
-		console.log(currentTodo);
 	}
 	const handleEditInputStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setCurrentTodo({
@@ -85,6 +84,12 @@ export const App = () => {
 			summary: e.target.value
 		});
 	}
+	const handleEditInputLimitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setCurrentTodo({
+			...currentTodo,
+			limit: e.target.value
+		});
+	}
 
 	const handleUpdateTodo = (id: number, updateTodo: any) => {
 		const updateTodoItem = todoList.map((todo) => {
@@ -96,8 +101,6 @@ export const App = () => {
 
 	const handleEditSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-		console.log(currentTodo);
-
 		handleUpdateTodo(currentTodo.id, currentTodo)
 	}
 
@@ -107,20 +110,15 @@ export const App = () => {
 			{isEditing ? (
 				<EditForm
 					currentTodo={currentTodo}
-					onChangeTitle={onChangeTitle}
-					onChangeStatus={onChangeStatus}
-					onChangeSummary={onChangeSummary}
 					handleEditInputTitleChange={handleEditInputTitleChange}
 					handleEditInputStatusChange={handleEditInputStatusChange}
 					handleEditInputSummaryChange={handleEditInputSummaryChange}
+					handleEditInputLimitChange={handleEditInputLimitChange}
 					handleEditSubmit={handleEditSubmit}
 				/>
 			) : (
 				<AddForm
-					inputTitle={inputTitle}
-					inputStatus={inputStatus}
-					inputSummary={inputSummary}
-					inputLimit={inputLimit}
+					inputAddTodo={inputAddTodo}
 					onChangeTitle={onChangeTitle}
 					onChangeStatus={onChangeStatus}
 					onChangeSummary={onChangeSummary}
@@ -128,8 +126,6 @@ export const App = () => {
 					onChangeLimit={onChangeLimit}
 				/>
 			)}
-				<SearchTodo
-				/>
 				<TodoList
 					todoList={todoList}
 					handleEditClick={handleEditClick}
